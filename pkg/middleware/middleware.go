@@ -48,5 +48,7 @@ func (m *Middleware) RequestTracer() gin.HandlerFunc {
 
 		ext.Error.Set(span, m.errorFn(c))
 		ext.HTTPStatusCode.Set(span, uint16(c.Writer.Status()))
+
+		span.Finish()
 	}
 }
