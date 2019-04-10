@@ -20,6 +20,8 @@ func RequestTracer(opts ...OptionFunc) gin.HandlerFunc {
 		opt(mwOptions)
 	}
 
+	mwOptions.handleDefaultOptions()
+
 	return func(c *gin.Context) {
 		tracer := opentracing.GlobalTracer()
 
