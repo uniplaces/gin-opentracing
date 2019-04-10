@@ -5,65 +5,65 @@ import (
 	"github.com/opentracing/opentracing-go"
 )
 
-type OptionFunc func(*Middleware)
+type OptionFunc func(*options)
 
 func SetOperationNameFn(fn func(*gin.Context) string) OptionFunc {
-	return func(m *Middleware) {
-		m.operationNameFn = fn
+	return func(opts *options) {
+		opts.operationNameFn = fn
 	}
 }
 
 func SetErrorFn(fn func(*gin.Context) bool) OptionFunc {
-	return func(m *Middleware) {
-		m.errorFn = fn
+	return func(opts *options) {
+		opts.errorFn = fn
 	}
 }
 
 func SetResourceNameFn(fn func(*gin.Context) string) OptionFunc {
-	return func(m *Middleware) {
-		m.resourceNameFn = fn
+	return func(opts *options) {
+		opts.resourceNameFn = fn
 	}
 }
 
 func SetBeforeHook(fn func(opentracing.Span, *gin.Context)) OptionFunc {
-	return func(m *Middleware) {
-		m.beforeHook = fn
+	return func(opts *options) {
+		opts.beforeHook = fn
 	}
 }
 
 func SetAfterHook(fn func(opentracing.Span, *gin.Context)) OptionFunc {
-	return func(m *Middleware) {
-		m.afterHook = fn
+	return func(opts *options) {
+		opts.afterHook = fn
 	}
 }
 
-func (m *Middleware) handleDefaultOptions() {
-	if m.operationNameFn == nil {
-		m.operationNameFn = func(ctx *gin.Context) string {
+func (opts *options) handleDefaultOptions() {
+	if opts.operationNameFn == nil {
+		opts.operationNameFn = func(ctx *gin.Context) string {
 			return "gin.request"
 		}
 	}
 
-	if m.errorFn == nil {
-		m.errorFn = func(ctx *gin.Context) bool {
+	if opts.errorFn == nil {
+		opts.errorFn = func(ctx *gin.Context) bool {
 			return ctx.Writer.Status() >= 400 || len(ctx.Errors) > 0
 		}
 	}
 
-	if m.resourceNameFn == nil {
-		m.resourceNameFn = func(ctx *gin.Context) string {
+	if opts.resourceNameFn == nil {
+		opts.resourceNameFn = func(ctx *gin.Context) string {
 			return ctx.HandlerName()
 		}
 	}
 
-	if m.beforeHook == nil {
-		m.beforeHook = func(span opentracing.Span, ctx *gin.Context) {
+	if opts.beforeHook == nil {
+		opts.beforeHook = func(span opentracing.Span, ctx *gin.Context) {
 			return
 		}
 	}
 
-	if m.afterHook == nil {
-		m.afterHook = func(span opentracing.Span, ctx *gin.Context) {
+	if opts.afterHook == nil {
+		opts.afterHook = func(span opentracing.Span, ctx *gin.Context) {
 			return
 		}
 	}
